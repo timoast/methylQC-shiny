@@ -60,7 +60,11 @@ server <- function(input, output) {
   })
   
   # Change dataset to user-specified chromosome
-  observeEvent(input$chrom, {rv$data <- subset(dat(), dat()$chr == input$chrom)})
+  observeEvent(input$chrom, {
+    withProgress(message = "Loading data", value = 1, {
+      rv$data <- subset(dat(), dat()$chr == input$chrom)
+      })
+})
   
   # Change start and stop positions for browser based on user-unput position
   observeEvent(input$position, {rv$start <- input$position - (300 * input$zoom)
@@ -117,7 +121,9 @@ server <- function(input, output) {
   # Create the browser view if data has been loaded
   output$browser <- renderPlot({
     if (is.null(dat())){return()}
-    plotBrowser(rv$data, start = rv$start, stop = rv$end)
+    withProgress(message = "Creating browser plot", style = "notification", value = 1, {
+      plotBrowser(rv$data, start = rv$start, stop = rv$end)
+    })
   })
   
   # If selected chromosome changes, re-sample data to plot the coverage distribution
@@ -143,7 +149,9 @@ server <- function(input, output) {
   
   survival <- eventReactive(rv$data, {
     if (is.null(dat())){return()}
-    coverageSurvival(rv$data, cytosines, input$chrom)
+    withProgress(message = "Creating coverage plot", value = 1, {
+      coverageSurvival(rv$data, cytosines, input$chrom)
+    })
   })
   
   # Create summary statistics based on input data
