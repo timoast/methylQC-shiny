@@ -29,7 +29,7 @@ ui <- fluidPage(theme = "theme.css",
 
 server <- function(input, output) {
   # read cytosine counts for Arabidopsis. Will need to change later to user input
-  cytosines <- read.table("./data/arabidopsis.tsv", header = T)
+  cytosines <- arabidopsis  # included in methylQC
   
   # change the max file size to 1 GB
   options(shiny.maxRequestSize=1000*1024^2)
@@ -38,7 +38,7 @@ server <- function(input, output) {
   dat <- reactive({
     file1 <- input$data
     if(input$demo == TRUE) {
-      loadData("./data/example_data.CGmap.gz")
+      methylome  # included in methylQC
     } else if(is.null(file1)){
       return()
     } else {
